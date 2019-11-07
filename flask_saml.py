@@ -13,7 +13,7 @@ try:
 except ImportError:  # pragma: no cover
     import urlparse
 
-__version__ = '0.4.3'
+__version__ = '1.0.0'
 
 log = logging.getLogger(__name__)
 
