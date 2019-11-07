@@ -33,9 +33,15 @@ def _get_metadata(metadata_url):  # pragma: no cover
     return response.text
 
 
-def _get_client(metadata, allow_unknown_attributes=True):
+def _get_client(metadata, allow_unknown_attributes=True, override_metadata_url = '', override_acs_url = ''):
     acs_url = flask.url_for('login_acs', _external=True)
     metadata_url = flask.url_for('metadata', _external=True)
+
+    if override_metadata_url != '':
+        metadata_url = override_metadata_url
+    if override_acs_url != '':
+        acs_url = override_acs_url
+
     settings = {
         'entityid': metadata_url,
         'metadata': {
@@ -72,7 +78,7 @@ def _saml_prepare(wrapped_func):
     @functools.wraps(wrapped_func)
     def func():
         ext, config = flask.current_app.extensions['saml']
-        client = _get_client(config['metadata'])
+        client = _get_client(config['metadata'], override_acs_url=config['override_acs_url'], override_metadata_url=config['override_metadata_url'])
         return wrapped_func(client)
     return func
 
@@ -107,11 +113,15 @@ class FlaskSAML(object):
         app.config.setdefault('SAML_PREFIX', '/saml')
         app.config.setdefault('SAML_DEFAULT_REDIRECT', '/')
         app.config.setdefault('SAML_USE_SESSIONS', True)
+        app.config.setdefault('SAML_OVERRIDE_METADATA_URL', '')
+        app.config.setdefault('SAML_OVERRIDE_ACS_URL', '')
 
         config = {
             'metadata': _get_metadata(
                 metadata_url=app.config['SAML_METADATA_URL'],
             ),
+            'override_metadata_url': app.config['SAML_OVERRIDE_METADATA_URL'],
+            'override_acs_url': app.config['SAML_OVERRIDE_ACS_URL'],
             'prefix': app.config['SAML_PREFIX'],
             'default_redirect': app.config['SAML_DEFAULT_REDIRECT'],
         }
