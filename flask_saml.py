@@ -13,7 +13,7 @@ try:
 except ImportError:  # pragma: no cover
     import urlparse
 
-__version__ = '1.0.2'
+__version__ = '1.0.3'
 
 log = logging.getLogger(__name__)
 
@@ -199,6 +199,7 @@ def login_acs(saml_client):
                 exception=exc,
             )
         else:
+            print("sending signal")
             saml_authenticated.send(
                 flask.current_app._get_current_object(),
                 subject=authn_response.get_subject().text,
