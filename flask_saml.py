@@ -13,7 +13,7 @@ try:
 except ImportError:  # pragma: no cover
     import urlparse
 
-__version__ = '1.0.0'
+__version__ = '1.0.2'
 
 log = logging.getLogger(__name__)
 
@@ -183,6 +183,7 @@ def login(saml_client):
 
 @_saml_prepare
 def login_acs(saml_client):
+    print("run login_acs")
     if 'SAMLResponse' in flask.request.form:
         log.debug('Received SAMLResponse for login')
         try:
