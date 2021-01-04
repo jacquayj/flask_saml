@@ -148,7 +148,7 @@ class FlaskSAML(object):
 
 def _get_return_to():
     ext, config = stack.top.app.extensions['saml']
-    return_to = flask.request.args.get('next', '')
+    return_to = flask.request.args.get('redirect', '')
     if not return_to.startswith(flask.request.url_root):
         return_to = config['default_redirect']
     return return_to
